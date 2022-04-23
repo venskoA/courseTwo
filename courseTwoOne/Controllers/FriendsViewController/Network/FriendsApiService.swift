@@ -8,6 +8,11 @@ enum AllError: Error {
 enum TypeMetod: String {
     case friendGet = "/method/friends.get"
     case groupGet = "/method/groups.get"
+    case photosGetAll = "/method/photos.getAll"
+    case groupsSearch = "/method/groups.search"
+    case groupsJoin = "/method/groups.join"
+    case groupsLeave = "/method/groups.leave"
+    case newsFeed = "/method/newsfeed.get"
 }
 
 enum TypeRequests: String {
@@ -16,10 +21,9 @@ enum TypeRequests: String {
 }
 
 final class FriendsApiService {
-    private let schema = "http"
-    private let host = "api.vk.com"
-    private let versionApi = "5.81"
+    private let config = ConfigureUrl()
 
+//    private let realmCacheService = RealmCacheService.
     private let session: URLSession = {
         let config = URLSessionConfiguration.default
         let session = URLSession.init(configuration: config)
@@ -28,14 +32,14 @@ final class FriendsApiService {
 
     func loadFriends(completion: @escaping ((Result<FriendsVK, AllError>) -> ())) {
         guard let token = Session.shared.token else {return}
-        let param: [String: String] = ["fields": "photo_50",
+        let param: [String: String] = ["fields": "photo_200_orig",
                                        "order": "name"]
 
-        let url = configure(token: token,
-                            method: .friendGet,
-                            httpMetod: .get,
-                            param: param)
-
+        let url = config.configure(token: token,
+                                   method: .friendGet,
+                                   httpMetod: .get,
+                                   param: param)
+        print("Friends url = \(url)")
         let task = session.dataTask(with: url) { data, response, error in
             if let error = error {
                 return completion(.failure(.requestError(error)))
@@ -52,31 +56,5 @@ final class FriendsApiService {
             }
         }
         task.resume()
-    }
-}
-
-private extension FriendsApiService {
-    func configure(token: String,
-                   method: TypeMetod,
-                   httpMetod: TypeRequests,
-                   param: [String: String]) -> URL {
-        var queryItem = [URLQueryItem]()
-        queryItem.append(URLQueryItem(name: "access_token", value: token))
-        queryItem.append(URLQueryItem(name: "v", value: versionApi))
-
-        for (param, value) in param {
-            queryItem.append(URLQueryItem(name: param, value: value))
-        }
-
-        var urlConponent = URLComponents()
-        urlConponent.scheme = schema
-        urlConponent.host = host
-        urlConponent.path = method.rawValue
-        urlConponent.queryItems = queryItem
-
-        guard let url = urlConponent.url else {
-            fatalError("URL is invaled")
-        }
-        return url
     }
 }
