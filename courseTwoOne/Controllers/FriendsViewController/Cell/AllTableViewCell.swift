@@ -11,6 +11,8 @@ class AllTableViewCell: UITableViewCell {
     @IBOutlet weak var viewImage: UIView!
     @IBOutlet weak var avatarButton: UIButton!
 
+    let friendService = FriendsServiceManager()
+
 //    Вызод анимации 2 вида
     var closure: (() -> Void)?
 //    weak var delegate: AllTableViewCellDelegate?
@@ -79,18 +81,24 @@ class AllTableViewCell: UITableViewCell {
         nameLabe.text = text
     }
 
-    func config(friend: Friends,  closure: @escaping (() -> Void)) {
-        if let imageName = friend.avatar {
-            avatarImage.image = UIImage(named: imageName)
+    func config(friend: FriendItems,  closure: @escaping (() -> Void)) {
+        let photo = friend.photo200orig
+
+        nameLabe.text = "\(friend.firstName) \(friend.lastName)"
+        friendService.loadImage(url: photo) {[weak self] image in
+            guard let self = self else { return }
+            self.avatarImage.image = image
         }
-        nameLabe.text = friend.name
+
 // MARK: Call animation
         self.closure = closure
     }
 
-    func config(group: Group){
-        if let imageName = group.avatar {
-            avatarImage.image = UIImage(named: imageName)
+    func config(group: GroupItems) {
+        let photo = group.photo50
+        friendService.loadImage(url: photo) { [weak self] image in
+            guard let self = self else { return }
+            self.avatarImage.image = image
         }
         nameLabe.text = group.name
     }

@@ -9,6 +9,7 @@ class PersonalPageVC: UIViewController {
     @IBOutlet weak var nameLabel: UILabel!
 
     var sourseArray: [String] = []
+    var idPerson: Int?
 
     let twoCastomGallerySegue = "toTwoCastomGallerySegue"
     let castomIdCollection = "CastomIdentifierCollection"
@@ -19,8 +20,7 @@ class PersonalPageVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        configTabView()
+        print(idPerson)
         avatarAndNameLayer()
         galleryCollectionView.dataSource = self
         galleryCollectionView.register(UINib(nibName: "GalleryCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: castomIdCollection)
@@ -38,8 +38,6 @@ class PersonalPageVC: UIViewController {
             self.view.backgroundColor = UIColor.tintColor
             self.imageFullScreen.transform = CGAffineTransform(scaleX: 0, y: 0)
         }
-
-
     }
 
     func avatarAndNameLayer() {
@@ -50,15 +48,14 @@ class PersonalPageVC: UIViewController {
         avatarImage.layer.borderWidth = 5
     }
 
-
-    func configTabView() {
-        avatarImage.image = UIImage(named: sourseArray[0])
-        nameLabel.text = sourseArray[1]
-//        if nameLabel.text?.count ?? 5 > 3 {
-        sourseArray.remove(at: 0)
-        sourseArray.remove(at: 0)
-//        }
-    }
+//    func configTabView() {
+//        avatarImage.image = UIImage(named: sourseArray[0])
+//        nameLabel.text = sourseArray[1]
+////        if nameLabel.text?.count ?? 5 > 3 {
+//        sourseArray.remove(at: 0)
+//        sourseArray.remove(at: 0)
+////        }
+//    }
 
 // MARK: Button first gallery
     @IBAction func galleryActionButton(_ sender: Any) {

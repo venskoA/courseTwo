@@ -1,9 +1,8 @@
 import UIKit
 
-class ViewController: UIViewController {
+class TestNetwork: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
     }
 }
-
