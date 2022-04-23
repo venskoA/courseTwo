@@ -31,7 +31,7 @@ class AllTableViewCell: UITableViewCell {
         avatarImage.layer.cornerRadius = 20
         viewImage.layer.cornerRadius = 20
         nameLabe.layer.cornerRadius = 5
-        viewImage.layer.shadowColor = UIColor.black.cgColor
+        viewImage.layer.shadowColor = UIColor.castomColorVK.cgColor
         viewImage.layer.shadowRadius = 3
         viewImage.layer.shadowOffset = CGSize(width: 3, height: 3)
         viewImage.layer.shadowOpacity = 0.75
@@ -41,7 +41,6 @@ class AllTableViewCell: UITableViewCell {
 // 2. Добавить анимацию нажатия на аватарку пользователя/группы в соответствующих таблицах. По нажатию фотография должна немного сжиматься, а после — возвращаться в исходное положение с эффектом пружины. Нужно подобрать оптимальное время анимации, чтобы получить максимально реалистичный эффект.
 // MARK: Animation press to avatar
     @IBAction func avatarActionButton(_ sender: UIButton) {
-
         UIView.animate(withDuration: 0.3,
                        delay: 0,
                        usingSpringWithDamping: 0.1,
@@ -49,10 +48,10 @@ class AllTableViewCell: UITableViewCell {
                        options: .curveEaseIn,
                        animations: {[weak self] in
             guard let self = self else {return}
-
+            
             let scaleAction = CGAffineTransform(scaleX: 1.2, y: 1.2)
             self.viewImage.transform = scaleAction
-                                    },
+        },
                        completion: { isSuccess in
             if isSuccess {
                 UIView.animate(withDuration: 0.3,
@@ -70,8 +69,8 @@ class AllTableViewCell: UITableViewCell {
                         self.closure?()
                     }
                 })
-                }
             }
+        }
         )
     }
 
@@ -81,16 +80,12 @@ class AllTableViewCell: UITableViewCell {
         nameLabe.text = text
     }
 
-    func config(friend: FriendItems,  closure: @escaping (() -> Void)) {
-        let photo = friend.photo200orig
+    // MARK: simple factory
+    func config(friend: FriendItemsForCell,  closure: @escaping (() -> Void)) {
+        nameLabe.text = friend.name
+        avatarImage.image = friend.avatar
 
-        nameLabe.text = "\(friend.firstName) \(friend.lastName)"
-        friendService.loadImage(url: photo) {[weak self] image in
-            guard let self = self else { return }
-            self.avatarImage.image = image
-        }
-
-// MARK: Call animation
+        // MARK: Call animation
         self.closure = closure
     }
 
